@@ -13,7 +13,7 @@ const loginRouter = require("./routers/login.router");
 const AuthMD = require("./auth/auth.md");
 
 const server = express();
-mongoose.connect('mongodb+srv://mostafafathy:*****@cluster0.yfirbch.mongodb.net/testDb').then(
+mongoose.connect('mongodb+srv://mostafafathy:Password@cluster0.yfirbch.mongodb.net/testDb').then(
     () => {
         console.log("Db is connected");
         server.listen(8000, () => {
