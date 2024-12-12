@@ -10,7 +10,9 @@ const bodyParser = require('body-parser');
 const studentRouter = require("./routers/student.router");
 const departmentRouter = require("./routers/department.router");
 const loginRouter = require("./routers/login.router");
-const AuthMD = require("./auth/auth.md");
+const AuthMD = require("./middlewares/auth.middleware");
+const loggerMiddleware = require("./middlewares/logger.middleware");
+const errorMiddleware = require("./middlewares/error.middleware");
 
 const server = express();
 mongoose.connect('mongodb+srv://mostafafathy:Password@cluster0.yfirbch.mongodb.net/testDb').then(
@@ -24,17 +26,12 @@ mongoose.connect('mongodb+srv://mostafafathy:Password@cluster0.yfirbch.mongodb.n
     console.log("Db error" + err);
 });
 
-
-
 //  middleware 
 // deal with req handling req 
 // first mw 
 
 server.use(bodyParser.json());
-server.use((requset, response, next) => {
-    console.log(requset.url, requset.method, requset.headers);
-    next();
-})
+server.use(loggerMiddleware);
 
 server.use("/student", studentRouter);
 server.use("/login", loginRouter);
@@ -45,9 +42,6 @@ server.use("/department", departmentRouter);
 server.use("", async (req, res) => {
     res.status(404).json("wrong url not found")
 })
+
 // error middleware 
-server.use((err, req, res, next) => {
-    console.log("********************************* from error middleware *****************");
-    console.log(err?.stack, 'error stack');
-    res.status(err.status).json(err.message);
-})
+server.use(errorMiddleware);
