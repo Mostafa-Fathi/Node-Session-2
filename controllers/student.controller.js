@@ -9,6 +9,8 @@ parms
  */
 /*create - update - get all - get one - delete */
 const StudentModel = require('../models/student.model');
+const jwt = require('jsonwebtoken');
+
 exports.getStudents = async function (req, res) {
     let filters = req.query;
     console.log(filters);
@@ -66,7 +68,8 @@ exports.login = async (req, res, next) => {
         if (student) {
             console.log(student, "student password form db data")
             if (student.password == body?.password) {
-                res.status(200).json({ id: student?._id });
+                const token = jwt.sign({ id: student._id }, 'your_secret_key', { expiresIn: '1h' });
+                res.status(200).json({ token });
             }
             else {
                 let err = new Error("wrong password");
